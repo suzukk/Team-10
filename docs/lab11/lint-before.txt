@@ -1,0 +1,26 @@
+$ npx eslint .   (засахаас өмнө)
+
+
+d:\Team-10\app\src\app.module.ts
+  11:14  error  Unexpected empty class  @typescript-eslint/no-extraneous-class
+
+d:\Team-10\app\src\listings\listings.controller.ts
+  38:26  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  59:38  error  Invalid type "number" of template literal expression                                                       @typescript-eslint/restrict-template-expressions
+
+d:\Team-10\app\src\listings\listings.repository.ts
+  21:3  error  Async method 'findAll' has no 'await' expression   @typescript-eslint/require-await
+  25:3  error  Async method 'findById' has no 'await' expression  @typescript-eslint/require-await
+
+d:\Team-10\app\src\listings\listings.service.spec.ts
+  77:30  error  Missing return type on function  @typescript-eslint/explicit-function-return-type
+  78:30  error  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+d:\Team-10\app\src\main.ts
+  17:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  17:28  error    Invalid type "number" of template literal expression                               @typescript-eslint/restrict-template-expressions
+
+✖ 9 problems (8 errors, 1 warning)
+
+
+exit code: 0
