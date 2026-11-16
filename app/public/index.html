@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Үл хөдлөх хөрөнгийн зар — 10-р баг</title>
+  <style>
+    :root { --ink: #1c2733; --muted: #5d6b7a; --line: #dfe5ec; --bg: #f5f7fa; --accent: #1f6f5c; --card: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    header { background: var(--accent); color: #fff; padding: 20px 16px; }
+    header h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    header p { margin: 0; opacity: .85; font-size: .9rem; }
+    main { max-width: 960px; margin: 0 auto; padding: 16px; }
+    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-items: end;
+           background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+    label { display: grid; gap: 4px; font-size: .8rem; color: var(--muted); }
+    input, select, button { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+    button { background: var(--accent); color: #fff; border-color: var(--accent); cursor: pointer; }
+    #summary { margin: 16px 0 8px; color: var(--muted); font-size: .9rem; }
+    #summary.error { color: #b3261e; }
+    #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; padding: 0; list-style: none; }
+    #results li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+    .tag { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 99px; background: #e3f1ed; color: var(--accent); }
+    .tag.sale { background: #fdeedc; color: #9a5b00; }
+    h2 { font-size: 1rem; margin: 8px 0 4px; }
+    .price { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .meta { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+    footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Үл хөдлөх хөрөнгө зарах, түрээслэх</h1>
+    <p>10-р баг · Зар хайх (US-01: үнэ болон байршлаар шүүх)</p>
+  </header>
+  <main>
+    <form id="filter">
+      <label>Дүүрэг
+        <select name="district">
+          <option value="">Бүгд</option>
+          <option>Баянгол</option>
+          <option>Баянзүрх</option>
+          <option>Сонгинохайрхан</option>
+          <option>Сүхбаатар</option>
+          <option>Хан-Уул</option>
+          <option>Чингэлтэй</option>
+        </select>
+      </label>
+      <label>Төрөл
+        <select name="type">
+          <option value="">Бүгд</option>
+          <option value="rent">Түрээс</option>
+          <option value="sale">Худалдаа</option>
+        </select>
+      </label>
+      <label>Доод үнэ (₮)
+        <input name="minPrice" type="number" min="0" step="100000" placeholder="0">
+      </label>
+      <label>Дээд үнэ (₮)
+        <input name="maxPrice" type="number" min="0" step="100000" placeholder="хязгааргүй">
+      </label>
+      <button type="submit">Хайх</button>
+    </form>
+
+    <p id="summary">Ачаалж байна…</p>
+    <ul id="results"></ul>
+  </main>
+  <footer id="footer"></footer>
+
+  <script>
+    const form = document.getElementById('filter');
+    const summary = document.getElementById('summary');
+    const results = document.getElementById('results');
+    const money = new Intl.NumberFormat('mn-MN');
+
+    function card(listing) {
+      const li = document.createElement('li');
+      const tag = document.createElement('span');
+      tag.className = 'tag ' + listing.type;
+      tag.textContent = listing.type === 'rent' ? 'Түрээс' : 'Худалдаа';
+      const title = document.createElement('h2');
+      title.textContent = listing.title;
+      const price = document.createElement('div');
+      price.className = 'price';
+      price.textContent = money.format(listing.price) + ' ₮' + (listing.type === 'rent' ? ' / сар' : '');
+      const meta = document.createElement('p');
+      meta.className = 'meta';
+      meta.textContent = `${listing.district} · ${listing.rooms} өрөө · ${listing.area} м²`;
+      li.append(tag, title, price, meta);
+      return li;
+    }
+
+    async function search() {
+      const params = new URLSearchParams();
+      for (const [key, value] of new FormData(form)) {
+        if (value !== '') params.set(key, value);
+      }
+      summary.className = '';
+      try {
+        const response = await fetch('/listings?' + params);
+        const body = await response.json();
+        if (!response.ok) throw new Error(body.message || 'Алдаа гарлаа');
+        results.replaceChildren(...body.items.map(card));
+        summary.textContent = body.count ? `${body.count} зар олдлоо` : 'Шалгуурт тохирох зар олдсонгүй';
+      } catch (error) {
+        results.replaceChildren();
+        summary.className = 'error';
+        summary.textContent = error.message;
+      }
+    }
+
+    form.addEventListener('submit', (event) => { event.preventDefault(); search(); });
+    search();
+
+    fetch('/health').then((r) => r.json()).then((health) => {
+      document.getElementById('footer').textContent = `Хувилбар ${health.version} · сервер: ${health.hostname}`;
+    });
+  </script>
+</body>
+</html>
