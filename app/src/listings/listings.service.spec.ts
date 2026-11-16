@@ -74,8 +74,8 @@ describe('filterListings — зарыг үнэ, байршлаар шүүх (US-
     const listings = [listing({ id: 1, price: 320_000_000 })];
 
     // Act
-    const negativePrice = () => filterListings(listings, { minPrice: -1 });
-    const reversedRange = () => filterListings(listings, { minPrice: 2_000_000, maxPrice: 1_000_000 });
+    const negativePrice = (): Listing[] => filterListings(listings, { minPrice: -1 });
+    const reversedRange = (): Listing[] => filterListings(listings, { minPrice: 2_000_000, maxPrice: 1_000_000 });
     const hugeMaxPrice = filterListings(listings, { maxPrice: Number.MAX_SAFE_INTEGER });
 
     // Assert
