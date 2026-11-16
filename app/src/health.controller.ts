@@ -1,7 +1,7 @@
 import { hostname } from 'node:os';
 import { Controller, Get } from '@nestjs/common';
 
-export const APP_VERSION = '1.0';
+export const APP_VERSION = '1.1';
 
 @Controller('health')
 export class HealthController {
