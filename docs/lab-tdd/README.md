@@ -17,10 +17,10 @@ Branch: `lab-tdd-dod` (`main`-аас салгасан, Лаб 8–11-ээс ха
 
 | Шат | Юу хийсэн | `npm test` үр дүн | Commit | Зураг |
 |---|---|---|---|---|
-| 1. Улаан | `sum.test.js`-д `1 + 2 = 3` тест бичсэн, `sum.js` байхгүй | `Cannot find module './sum'` — 1 suite унасан | `ffcea06` | [01-red-no-function.png](01-red-no-function.png) |
-| 1. Ногоон | `sum.js`-д `return a + b` бичсэн | 1 passed | `08f6094` | [02-green-sum.png](02-green-sum.png) |
-| 2. Улаан | Шинэ шаардлага: тоо биш утгад алдаа шидэх тест нэмсэн | 1 failed, 1 passed — `Received function did not throw` | `14a26c8` | [03-red-new-requirement.png](03-red-new-requirement.png) |
-| 2. Ногоон | `sum.js`-д `typeof` шалгалт нэмж `Error` шиддэг болгосон | 2 passed | `52b304b` | [04-green-all.png](04-green-all.png) |
+| 1. Улаан | `sum.test.js`-д `1 + 2 = 3` тест бичсэн, `sum.js` байхгүй | `Cannot find module './sum'` — 1 suite унасан | `f7442aa` | [01-red-no-function.png](01-red-no-function.png) |
+| 1. Ногоон | `sum.js`-д `return a + b` бичсэн | 1 passed | `ed88f21` | [02-green-sum.png](02-green-sum.png) |
+| 2. Улаан | Шинэ шаардлага: тоо биш утгад алдаа шидэх тест нэмсэн | 1 failed, 1 passed — `Received function did not throw` | `a0a6e1b` | [03-red-new-requirement.png](03-red-new-requirement.png) |
+| 2. Ногоон | `sum.js`-д `typeof` шалгалт нэмж `Error` шиддэг болгосон | 2 passed | `383bceb` | [04-green-all.png](04-green-all.png) |
 | Рефактор | Функц богино, ойлгомжтой тул бүтцийн өөрчлөлт шаардлагагүй; JSDoc тайлбар нэмсэн | 2 passed | — | — |
 
 ## Ашигласан командууд
