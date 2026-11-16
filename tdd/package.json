@@ -1,0 +1,13 @@
+{
+  "name": "team10-tdd-sum",
+  "version": "1.0.0",
+  "description": "TDD дадлага: sum функц (Улаан-Ногоон-Рефактор)",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
