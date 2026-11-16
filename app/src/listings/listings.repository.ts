@@ -18,12 +18,12 @@ const SEED_LISTINGS: Listing[] = [
  */
 @Injectable()
 export class ListingsRepository {
-  async findAll(): Promise<Listing[]> {
-    return SEED_LISTINGS.map((listing) => ({ ...listing }));
+  findAll(): Promise<Listing[]> {
+    return Promise.resolve(SEED_LISTINGS.map((listing) => ({ ...listing })));
   }
 
-  async findById(id: number): Promise<Listing | undefined> {
+  findById(id: number): Promise<Listing | undefined> {
     const listing = SEED_LISTINGS.find((item) => item.id === id);
-    return listing ? { ...listing } : undefined;
+    return Promise.resolve(listing ? { ...listing } : undefined);
   }
 }

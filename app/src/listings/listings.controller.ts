@@ -35,7 +35,8 @@ export class ListingsController {
     @Query('maxPrice') maxPrice?: string,
   ): Promise<{ count: number; items: Listing[] }> {
     const filter: ListingFilter = {
-      district: district || undefined,
+      // Хоосон мөрийг filterListings() өөрөө "шүүлтүүргүй" гэж үзнэ.
+      district,
       type: parseType(type),
       minPrice: parsePrice('minPrice', minPrice),
       maxPrice: parsePrice('maxPrice', maxPrice),
@@ -56,7 +57,7 @@ export class ListingsController {
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Listing> {
     const listing = await this.listingsService.findActiveById(id);
     if (!listing) {
-      throw new NotFoundException(`${id} дугаартай идэвхтэй зар олдсонгүй`);
+      throw new NotFoundException(`${String(id)} дугаартай идэвхтэй зар олдсонгүй`);
     }
     return listing;
   }

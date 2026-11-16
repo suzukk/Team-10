@@ -24,6 +24,8 @@ export default tseslint.config(
       'prefer-const': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
+      // NestJS-ийн @Module() класс нь зориуд хоосон байдаг.
+      '@typescript-eslint/no-extraneous-class': ['error', { allowWithDecorator: true }],
     },
   },
 

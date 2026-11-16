@@ -23,4 +23,4 @@ d:\Team-10\app\src\main.ts
 ✖ 9 problems (8 errors, 1 warning)
 
 
-exit code: 0
+exit code: 1
