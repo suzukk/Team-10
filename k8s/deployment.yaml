@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realestate-api
+  labels:
+    app: realestate-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: realestate-api
+  template:
+    metadata:
+      labels:
+        app: realestate-api
+    spec:
+      containers:
+        - name: api
+          # Лаб 8-д бүтээсэн локал image. `minikube image load`-оор cluster-т
+          # оруулсан тул registry-ээс татах гэж оролдохгүй (Never).
+          image: team10-realestate-api:1.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
