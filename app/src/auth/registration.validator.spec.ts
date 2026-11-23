@@ -138,4 +138,44 @@ describe('validateRegistration', () => {
     expect(JSON.stringify(result)).not.toContain(secret);
     expect(elapsedMs).toBeLessThan(200);
   });
+
+  // ---------- Review-ийн явцад нэмсэн тестүүд ----------
+
+  it('кирилл үсгээр бичсэн нууц үгийн том, жижиг үсгийг тоолно', () => {
+    // Arrange
+    const input = { name: 'Болд', email: 'bold@mail.mn', phone: '99112233', password: 'Нууцүг2025' };
+
+    // Act
+    const result = validateRegistration(input);
+
+    // Assert
+    expect(result.valid).toBe(true);
+  });
+
+  it.each(['\u0000\u0000', '​​​', 'Бо\u0007лд'])(
+    'хяналтын эсвэл үл харагдах тэмдэгттэй нэрийг (%j) татгалзана',
+    (name) => {
+      // Arrange
+      const input = { name, email: 'bold@mail.mn', phone: '99112233', password: 'Secure123' };
+
+      // Act
+      const result = validateRegistration(input);
+
+      // Assert
+      expect(fieldsOf(result)).toEqual(['name']);
+    },
+  );
+
+  it('нууц үгийн уртыг нэрийн адил тэмдэгтээр (code point) тоолно', () => {
+    // Arrange — 6 тэмдэгт боловч UTF-16-д 9 нэгж
+    const input = { name: 'Болд', email: 'bold@mail.mn', phone: '99112233', password: 'Ab1😀😀😀' };
+
+    // Act
+    const result = validateRegistration(input);
+
+    // Assert
+    expect(errorsOf(result)).toEqual([
+      { field: 'password', message: 'Нууц үг 8–64 тэмдэгт байх ёстой.' },
+    ]);
+  });
 });
