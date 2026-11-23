@@ -48,13 +48,17 @@ const DOMAIN_LABEL_RE = /^[a-z0-9-]+$/;
 const TLD_RE = /^[a-z]{2,63}$/;
 const PHONE_SEPARATORS_RE = /[\s-]/g;
 const MN_PHONE_RE = /^[6-9][0-9]{7}$/;
-const UPPERCASE_RE = /[A-Z]/;
-const LOWERCASE_RE = /[a-z]/;
+// Review засвар: латин төдийгүй кирилл (монгол) үсгийг тоолохын тулд Unicode ангилал.
+const UPPERCASE_RE = /\p{Lu}/u;
+const LOWERCASE_RE = /\p{Ll}/u;
+// Review засвар: хяналтын (Cc) болон үл харагдах формат (Cf, жишээ нь zero-width) тэмдэгт.
+const INVISIBLE_CHAR_RE = /[\p{Cc}\p{Cf}]/u;
 const DIGIT_RE = /[0-9]/;
 
 const MESSAGES = {
   invalidInput: 'Бүртгэлийн мэдээлэл объект хэлбэртэй байх ёстой.',
   nameLength: `Нэр ${String(NAME_MIN)}–${String(NAME_MAX)} тэмдэгт байх ёстой.`,
+  nameInvisibleChars: 'Нэр хяналтын болон үл харагдах тэмдэгт агуулж болохгүй.',
   emailFormat: 'Имэйл хаяг буруу хэлбэртэй байна.',
   emailTooLong: `Имэйл хаяг ${String(EMAIL_MAX)} тэмдэгтээс урт байж болохгүй.`,
   phoneFormat: 'Утасны дугаар 6, 7, 8 эсвэл 9-өөр эхэлсэн 8 оронтой байх ёстой.',
@@ -121,6 +125,9 @@ function validateName(raw: unknown): FieldOutcome<string> {
   const charCount = Array.from(name).length;
   if (charCount < NAME_MIN || charCount > NAME_MAX) {
     return fail(MESSAGES.nameLength);
+  }
+  if (INVISIBLE_CHAR_RE.test(name)) {
+    return fail(MESSAGES.nameInvisibleChars);
   }
   return ok(name);
 }
@@ -224,8 +231,13 @@ function validatePassword(raw: unknown, emailLocalPart: string | null): readonly
     return [required('Нууц үг')];
   }
 
+  // Review засвар: нэрийн адил тэмдэгтээр (code point) тоолно. Хэт урт бол том массив
+  // үүсгэхгүйн тулд шууд хязгаараас хэтэрсэн гэж үзнэ.
+  const charCount =
+    password.length > PASSWORD_MAX * 2 ? Number.POSITIVE_INFINITY : Array.from(password).length;
+
   const messages: string[] = [];
-  if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
+  if (charCount < PASSWORD_MIN || charCount > PASSWORD_MAX) {
     messages.push(MESSAGES.passwordLength);
   }
   if (!UPPERCASE_RE.test(password)) {

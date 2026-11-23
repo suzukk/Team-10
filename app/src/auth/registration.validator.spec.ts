@@ -136,7 +136,9 @@ describe('validateRegistration', () => {
     // Assert
     expect(result.valid).toBe(false);
     expect(JSON.stringify(result)).not.toContain(secret);
-    expect(elapsedMs).toBeLessThan(200);
+    // Review засвар: 200 мс нь удаан CI машин дээр санамсаргүй унах (flaky) эрсдэлтэй.
+    // Шугаман regex хэдэн мс-д дуусна, catastrophic backtracking бол секунд/минут болно.
+    expect(elapsedMs).toBeLessThan(1000);
   });
 
   // ---------- Review-ийн явцад нэмсэн тестүүд ----------
